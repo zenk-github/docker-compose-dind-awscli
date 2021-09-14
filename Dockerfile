@@ -2,6 +2,8 @@ FROM docker:stable
 
 ENV GLIBC_VER=2.33-r0
 
+
+
 # install glibc compatibility for alpine
 RUN apk --no-cache add \
         binutils \
@@ -31,5 +33,18 @@ RUN apk --no-cache add \
     && rm glibc-bin-${GLIBC_VER}.apk \
     && rm -rf /var/cache/apk/*
 
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+RUN  apk --no-cache add \
+        py-pip \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
+        gcc \
+        libc-dev \
+        make \
+    && pip install --upgrade pip \
+    && pip install docker-compose
+
 CMD /bin/bash
-RUN aws --version
+RUN aws --version \
+    && docker-compose --version 
