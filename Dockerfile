@@ -1,8 +1,11 @@
-FROM docker:stable
+FROM alpine:3.11
+
+RUN apk update \
+    && apk add  --no-cache \
+        docker \
+        docker-compose
 
 ENV GLIBC_VER=2.34-r0
-
-
 
 # install glibc compatibility for alpine
 RUN apk --no-cache add \
@@ -28,23 +31,13 @@ RUN apk --no-cache add \
         /usr/local/aws-cli/v2/*/dist/awscli/examples \
     && apk --no-cache del \
         binutils \
-        curl \
     && rm glibc-${GLIBC_VER}.apk \
     && rm glibc-bin-${GLIBC_VER}.apk \
     && rm -rf /var/cache/apk/*
 
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
-RUN  apk --no-cache add \
-        py-pip \
-        python3-dev \
-        libffi-dev \
-        openssl-dev \
-        gcc \
-        libc-dev \
-        make \
-    && pip install --upgrade pip \
-    && pip install docker-compose
+RUN curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
 
 CMD /bin/bash
-RUN aws --version \
-    && docker-compose --version 
+RUN docker --version \
+    && aws --version \
+    && docker-compose --version
