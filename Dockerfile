@@ -37,6 +37,9 @@ RUN apk --no-cache add \
 
 RUN curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
 
+RUN apk add openrc \
+    && rc-update add docker boot
+
 CMD /bin/bash
 RUN docker --version \
     && aws --version \
